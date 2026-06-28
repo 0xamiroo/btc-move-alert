@@ -39,7 +39,7 @@ Loading...
 
 <script>
 
-const api="https://api.allorigins.win/raw?url=https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
+const api="https://api.codetabs.com/v1/proxy?quest=https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
 
 let lastPrice=null
 
@@ -48,7 +48,6 @@ async function checkPrice(){
 try{
 
 const res=await fetch(api)
-
 const data=await res.json()
 
 const price=data.bitcoin.usd
