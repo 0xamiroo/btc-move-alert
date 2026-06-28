@@ -2,6 +2,7 @@
 <html>
 <head>
 <title>0xAmiroo BTC Move Alert</title>
+
 <style>
 body{
 font-family:Arial;
@@ -23,6 +24,7 @@ max-width:500px;
 margin:auto;
 }
 </style>
+
 </head>
 
 <body>
@@ -38,14 +40,14 @@ Loading...
 <script>
 
 const proxy="https://latch-beta.rialo.io/proxy/lnk_06f8569940574744"
-
 const token="lat_446c2f89de75d53a24c68d7368372d5b4a1e49aee9c225c8d46d904699cb4888"
-
 const apiKey="CG-8B8hQWnbfx9rSWq8tBvTCyDs"
 
 let lastPrice=null
 
 async function checkPrice(){
+
+try{
 
 const res=await fetch(
 proxy+"/api/v3/simple/price?ids=bitcoin&vs_currencies=usd",
@@ -77,17 +79,24 @@ div.innerText=msg
 document.getElementById("log").prepend(div)
 
 new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg").play()
+
 }
 
 }
 
 lastPrice=price
 
+}catch(e){
+
+document.getElementById("price").innerText="API error"
+
+}
+
 }
 
 checkPrice()
 
-setInterval(checkPrice,15000)
+setInterval(checkPrice,20000)
 
 </script>
 
