@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>0xAmiroo BTC Move Alert</title>
+<title>0xAmiroo BTC Watcher</title>
 
 <style>
 body{
@@ -13,15 +13,16 @@ padding:40px;
 }
 
 .price{
-font-size:48px;
-margin:20px;
+font-size:50px;
+margin:30px;
 }
 
 .log{
-margin-top:40px;
-text-align:left;
+margin-top:30px;
 max-width:500px;
-margin:auto;
+margin-left:auto;
+margin-right:auto;
+text-align:left;
 }
 </style>
 
@@ -29,17 +30,17 @@ margin:auto;
 
 <body>
 
-<h1>0xAmiroo BTC Volatility Watcher</h1>
+<h1>BTC Price Watcher</h1>
 
-<div class="price" id="price">
-Loading...
-</div>
+<div id="price" class="price">Loading...</div>
 
-<div class="log" id="log"></div>
+<div id="log" class="log"></div>
 
 <script>
 
-const api="https://api.codetabs.com/v1/proxy?quest=https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
+const api="https://latch-beta.rialo.io/proxy/lnk_06f8569940574744/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
+
+const token="lat_446c2f89de75d53a24c68d7368372d5b4a1e49aee9c225c8d46d904699cb4888"
 
 let lastPrice=null
 
@@ -47,7 +48,12 @@ async function checkPrice(){
 
 try{
 
-const res=await fetch(api)
+const res=await fetch(api,{
+headers:{
+Authorization:"Bearer "+token
+}
+})
+
 const data=await res.json()
 
 const price=data.bitcoin.usd
@@ -60,14 +66,11 @@ let change=((price-lastPrice)/lastPrice)*100
 
 if(Math.abs(change)>=0.05){
 
-let msg="⚡ BTC moved "+change.toFixed(2)+"% → $"+price
-
 let div=document.createElement("div")
-div.innerText=msg
+
+div.innerText="⚡ BTC moved "+change.toFixed(2)+"% → $"+price
 
 document.getElementById("log").prepend(div)
-
-new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg").play()
 
 }
 
