@@ -2,11 +2,12 @@
 <html>
 
 <head>
-<title>0xAmiroo BTC Watcher</title>
+<title>0xAmiroo BTC Live Watcher</title>
 
 <style>
+
 body{
-background:#111;
+background:#0f0f0f;
 color:white;
 font-family:Arial;
 text-align:center;
@@ -15,17 +16,33 @@ padding:40px;
 
 .price{
 font-size:60px;
-margin-top:30px;
+margin-top:20px;
+font-weight:bold;
+}
+
+.up{
+color:#00ff9c;
+}
+
+.down{
+color:#ff4d4d;
 }
 
 .log{
 margin-top:40px;
-max-width:500px;
+max-width:600px;
 margin-left:auto;
 margin-right:auto;
 text-align:left;
 font-size:14px;
+font-family:monospace;
 }
+
+.row{
+padding:6px;
+border-bottom:1px solid #222;
+}
+
 </style>
 
 </head>
@@ -44,30 +61,77 @@ const api="https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currenci
 
 let lastPrice=null
 
+function beep(){
+
+let ctx=new(window.AudioContext||window.webkitAudioContext)()
+
+let osc=ctx.createOscillator()
+
+osc.type="sine"
+
+osc.frequency.value=880
+
+osc.connect(ctx.destination)
+
+osc.start()
+
+setTimeout(()=>{osc.stop()},200)
+
+}
+
 async function checkPrice(){
 
 try{
 
 const res=await fetch(api)
+
 const data=await res.json()
 
 const price=data.bitcoin.usd
 
-document.getElementById("price").innerText="$"+price
+let priceDiv=document.getElementById("price")
+
+priceDiv.innerText="$"+price
 
 let change=0
 
+let direction=""
+
 if(lastPrice){
+
 change=((price-lastPrice)/lastPrice)*100
+
+if(change>0){
+
+priceDiv.className="price up"
+
+direction="⬆"
+
+}else if(change<0){
+
+priceDiv.className="price down"
+
+direction="⬇"
+
+}
+
 }
 
 let time=new Date().toLocaleTimeString()
 
-let div=document.createElement("div")
+let row=document.createElement("div")
 
-div.innerText=time+"  |  $"+price+"  |  "+change.toFixed(3)+"%"
+row.className="row"
 
-document.getElementById("log").prepend(div)
+row.innerText=time+" | "+direction+" $"+price+" | "+change.toFixed(3)+"%"
+
+document.getElementById("log").prepend(row)
+
+if(Math.abs(change)>=0.3){
+
+beep()
+
+}
 
 lastPrice=price
 
