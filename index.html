@@ -24,6 +24,7 @@ max-width:500px;
 margin-left:auto;
 margin-right:auto;
 text-align:left;
+font-size:14px;
 }
 </style>
 
@@ -31,7 +32,7 @@ text-align:left;
 
 <body>
 
-<h1>0xAmiroo BTC Volatility Watcher</h1>
+<h1>0xAmiroo BTC Live Watcher</h1>
 
 <div id="price" class="price">Loading...</div>
 
@@ -54,21 +55,19 @@ const price=data.bitcoin.usd
 
 document.getElementById("price").innerText="$"+price
 
+let change=0
+
 if(lastPrice){
+change=((price-lastPrice)/lastPrice)*100
+}
 
-let change=((price-lastPrice)/lastPrice)*100
-
-if(Math.abs(change)>=0.05){
+let time=new Date().toLocaleTimeString()
 
 let div=document.createElement("div")
 
-div.innerText="⚡ BTC moved "+change.toFixed(2)+"% → $"+price
+div.innerText=time+"  |  $"+price+"  |  "+change.toFixed(3)+"%"
 
 document.getElementById("log").prepend(div)
-
-}
-
-}
 
 lastPrice=price
 
