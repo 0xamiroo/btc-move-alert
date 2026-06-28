@@ -6,20 +6,20 @@
 
 <style>
 body{
-font-family:Arial;
 background:#111;
-color:#fff;
+color:white;
+font-family:Arial;
 text-align:center;
 padding:40px;
 }
 
 .price{
-font-size:50px;
-margin:30px;
+font-size:60px;
+margin-top:30px;
 }
 
 .log{
-margin-top:30px;
+margin-top:40px;
 max-width:500px;
 margin-left:auto;
 margin-right:auto;
@@ -31,7 +31,7 @@ text-align:left;
 
 <body>
 
-<h1>BTC Price Watcher</h1>
+<h1>0xAmiroo BTC Volatility Watcher</h1>
 
 <div id="price" class="price">Loading...</div>
 
@@ -39,9 +39,7 @@ text-align:left;
 
 <script>
 
-const api="https://latch-beta.rialo.io/proxy/lnk_06f8569940574744/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
-
-const token="lat_446c2f89de75d53a24c68d7368372d5b4a1e49aee9c225c8d46d904699cb4888"
+const api="https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
 
 let lastPrice=null
 
@@ -49,12 +47,7 @@ async function checkPrice(){
 
 try{
 
-const res=await fetch(api,{
-headers:{
-"Authorization":"Bearer "+token
-}
-})
-
+const res=await fetch(api)
 const data=await res.json()
 
 const price=data.bitcoin.usd
@@ -89,7 +82,7 @@ document.getElementById("price").innerText="API error"
 
 checkPrice()
 
-setInterval(checkPrice,20000)
+setInterval(checkPrice,15000)
 
 </script>
 
