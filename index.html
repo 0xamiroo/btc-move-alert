@@ -1,1 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>0xAMIROO BTC Move Alert</title>
+<style>
+body{
+font-family:Arial;
+background:#111;
+color:#fff;
+text-align:center;
+padding:40px;
+}
+
+.price{
+font-size:48px;
+margin:20px;
+}
+
+.log{
+margin-top:40px;
+text-align:left;
+max-width:500px;
+margin:auto;
+}
+</style>
+</head>
+
+<body>
+
+<h1>BTC Volatility Watcher</h1>
+
+<div class="price" id="price">
+Loading...
+</div>
+
+<div class="log" id="log"></div>
+
+<script>
+
+const proxy="https://latch-beta.rialo.io/proxy/lnk_06f8569940574744"
+
+const token="lat_446c2f89de75d53a24c68d7368372d5b4a1e49aee9c225c8d46d904699cb4888"
+
+const apiKey="CG-8B8hQWnbfx9rSWq8tBvTCyDs"
+
+let lastPrice=null
+
+async function checkPrice(){
+
+const res=await fetch(
+proxy+"/api/v3/simple/price?ids=bitcoin&vs_currencies=usd",
+{
+headers:{
+"Authorization":"Bearer "+token,
+"x-cg-demo-api-key":apiKey
+}
+}
+)
+
+const data=await res.json()
+
+const price=data.bitcoin.usd
+
+document.getElementById("price").innerText="$"+price
+
+if(lastPrice){
+
+let change=((price-lastPrice)/lastPrice)*100
+
+if(Math.abs(change)>=0.2){
+
+let msg="⚡ BTC moved "+change.toFixed(2)+"% → $"+price
+
+let div=document.createElement("div")
+div.innerText=msg
+
+document.getElementById("log").prepend(div)
+
+new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg").play()
+}
+
+}
+
+lastPrice=price
+
+}
+
+checkPrice()
+
+setInterval(checkPrice,15000)
+
+</script>
+
+</body>
+</html>
 
