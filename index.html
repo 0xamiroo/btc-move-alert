@@ -41,7 +41,6 @@ Loading...
 
 const proxy="https://latch-beta.rialo.io/proxy/lnk_06f8569940574744"
 const token="lat_446c2f89de75d53a24c68d7368372d5b4a1e49aee9c225c8d46d904699cb4888"
-const apiKey="CG-8B8hQWnbfx9rSWq8tBvTCyDs"
 
 let lastPrice=null
 
@@ -53,13 +52,17 @@ const res=await fetch(
 proxy+"/api/v3/simple/price?ids=bitcoin&vs_currencies=usd",
 {
 headers:{
-"Authorization":"Bearer "+token,
-"x-cg-demo-api-key":apiKey
+"Authorization":"Bearer "+token
 }
 }
 )
 
 const data=await res.json()
+
+if(!data.bitcoin){
+document.getElementById("price").innerText="API error"
+return
+}
 
 const price=data.bitcoin.usd
 
