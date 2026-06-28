@@ -2,7 +2,7 @@
 <html>
 
 <head>
-<title>0xAmiroo BTC Live Watcher</title>
+<title>0xAmiroo BTC Move Alert</title>
 
 <style>
 
@@ -49,7 +49,7 @@ border-bottom:1px solid #222;
 
 <body>
 
-<h1>0xAmiroo BTC Live Watcher</h1>
+<h1>0xAmiroo BTC Move Alert</h1>
 
 <div id="price" class="price">Loading...</div>
 
@@ -59,15 +59,22 @@ border-bottom:1px solid #222;
 
 const api="https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
 
+const threshold=0.05
+
 let lastPrice=null
+let audioEnabled=false
+
+document.body.addEventListener("click",()=>{
+audioEnabled=true
+})
 
 function beep(){
+
+if(!audioEnabled) return
 
 let ctx=new(window.AudioContext||window.webkitAudioContext)()
 
 let osc=ctx.createOscillator()
-
-osc.type="sine"
 
 osc.frequency.value=880
 
@@ -75,7 +82,7 @@ osc.connect(ctx.destination)
 
 osc.start()
 
-setTimeout(()=>{osc.stop()},200)
+setTimeout(()=>osc.stop(),200)
 
 }
 
@@ -93,28 +100,20 @@ let priceDiv=document.getElementById("price")
 
 priceDiv.innerText="$"+price
 
-let change=0
+if(lastPrice!==null){
+
+let change=((price-lastPrice)/lastPrice)*100
+
+if(Math.abs(change)>=threshold){
 
 let direction=""
 
-if(lastPrice){
-
-change=((price-lastPrice)/lastPrice)*100
-
 if(change>0){
-
-priceDiv.className="price up"
-
 direction="⬆"
-
-}else if(change<0){
-
-priceDiv.className="price down"
-
+priceDiv.className="price up"
+}else{
 direction="⬇"
-
-}
-
+priceDiv.className="price down"
 }
 
 let time=new Date().toLocaleTimeString()
@@ -127,9 +126,9 @@ row.innerText=time+" | "+direction+" $"+price+" | "+change.toFixed(3)+"%"
 
 document.getElementById("log").prepend(row)
 
-if(Math.abs(change)>=0.3){
-
 beep()
+
+}
 
 }
 
